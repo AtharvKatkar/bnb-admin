@@ -1,6 +1,7 @@
 import { GitHubBanner, Refine } from "@refinedev/core";
 import { DevtoolsPanel, DevtoolsProvider } from "@refinedev/devtools";
 import { RefineKbar, RefineKbarProvider } from "@refinedev/kbar";
+import { AntdInferencer, } from "@refinedev/inferencer/antd";
 
 import {
   ErrorComponent,
@@ -20,48 +21,37 @@ import { App as AntdApp } from "antd";
 import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
 import { Header } from "./components/header";
 import { ColorModeContextProvider } from "./contexts/color-mode";
-import {
-  BlogPostCreate,
-  BlogPostEdit,
-  BlogPostList,
-  BlogPostShow,
-} from "./pages/blog-posts";
-import {
-  CategoryCreate,
-  CategoryEdit,
-  CategoryList,
-  CategoryShow,
-} from "./pages/categories";
+import { firebaseAuth, firestoreDatabase } from "./lib/firebase";
 
 function App() {
   return (
     <BrowserRouter>
-      <GitHubBanner />
       <RefineKbarProvider>
         <ColorModeContextProvider>
           <AntdApp>
             <DevtoolsProvider>
               <Refine
-                dataProvider={dataProvider("https://api.fake-rest.refine.dev")}
+                dataProvider={firestoreDatabase.getDataProvider()}
+                authProvider={firebaseAuth.getAuthProvider()}
                 notificationProvider={useNotificationProvider}
                 routerProvider={routerBindings}
                 resources={[
                   {
-                    name: "blog_posts",
-                    list: "/blog-posts",
-                    create: "/blog-posts/create",
-                    edit: "/blog-posts/edit/:id",
-                    show: "/blog-posts/show/:id",
+                    name: "listing",
+                    list: "/listing",
+                    create: "/listing/create",
+                    edit: "/listing/edit/:id",
+                    show: "/listing/show/:id",
                     meta: {
                       canDelete: true,
                     },
                   },
                   {
-                    name: "categories",
-                    list: "/categories",
-                    create: "/categories/create",
-                    edit: "/categories/edit/:id",
-                    show: "/categories/show/:id",
+                    name: "reservations",
+                    list: "/reservations",
+                    create: "/reservations/create",
+                    edit: "/reservations/edit/:id",
+                    show: "/reservations/show/:id",
                     meta: {
                       canDelete: true,
                     },
@@ -87,19 +77,20 @@ function App() {
                   >
                     <Route
                       index
-                      element={<NavigateToResource resource="blog_posts" />}
+                      element={<NavigateToResource resource="listing" />}
                     />
-                    <Route path="/blog-posts">
-                      <Route index element={<BlogPostList />} />
-                      <Route path="create" element={<BlogPostCreate />} />
-                      <Route path="edit/:id" element={<BlogPostEdit />} />
-                      <Route path="show/:id" element={<BlogPostShow />} />
+                    {/* TODO: */}
+                    <Route path="/listing">
+                      <Route index element={<AntdInferencer />} />
+                      <Route path="create" element={<AntdInferencer />} />
+                      <Route path="edit/:id" element={<AntdInferencer />} />
+                      <Route path="show/:id" element={<AntdInferencer />} />
                     </Route>
-                    <Route path="/categories">
-                      <Route index element={<CategoryList />} />
-                      <Route path="create" element={<CategoryCreate />} />
-                      <Route path="edit/:id" element={<CategoryEdit />} />
-                      <Route path="show/:id" element={<CategoryShow />} />
+                    <Route path="/reservations">
+                      <Route index element={<AntdInferencer />} />
+                      <Route path="create" element={<AntdInferencer />} />
+                      <Route path="edit/:id" element={<AntdInferencer />} />
+                      <Route path="show/:id" element={<AntdInferencer />} />
                     </Route>
                     <Route path="*" element={<ErrorComponent />} />
                   </Route>
